@@ -8,7 +8,7 @@ It's mainly a rough port of [AndEngine](http://www.andengine.org/) SVG plugin wi
 
 ### Preparing your SVG
 
-First and foremost, this library is not meant to be a full blown SVG parser. Rather the idea is to support a small subset of the format to allow scalable shapes to be used on Android. This mean that path, shapes, color and gradients are supported but basically nothing else (e.g. pretty much no SVG effects).
+First and foremost, this library is not meant to be a full blown SVG parser. Rather the idea is to support a small subset of the format to allow scalable shapes to be used on Android. This means that path, shapes, color and gradients are supported but basically nothing else (e.g. pretty much no SVG effects).
 
 It's also possible that some higher-level SVG constructs used by graphic softwares don't meddle well with the parser. In that case, you should try to export the image in a "lower-compatibility" or "simplified" mode. The excellent (and free) [Inkscape](http://inkscape.org/) SVG editor for instance supports saving pictures in a "Optimized SVG" format that is more suitable to be consummed by the library.
 
@@ -39,15 +39,15 @@ In that case, the drawable will automatically generate a bitmap representation o
 
 ### Color mapper
 
-Every factory method supports a optional color mapper parameter that lets you dynamically change the color of the SVG being parsed. This is useful if you want to reuse the same SVG multiple time with a different tint color.
+Every factory method supports an optional color mapper parameter that let you dynamically change the color of the SVG being parsed. This is useful if you want to reuse the same SVG multiple time with a different tint color.
 
 You can create a mapper by implementing the `ISvgColorMapper` interface or directly create one with a `Func<Color, Color>` using the `SvgColorMapperFactory.FromFunc` method.
 
 ### Low-level, directly using SvgParser
 
-If you want to have directly access to the parsed SVG representation, you can use the method of `SvgParser` which returns a `Svg` instance.
+If you want to have directly access to the parsed SVG representation, you can use the methods of the `SvgParser` class which return a `Svg` instance.
 
-Notably that instance contains a `Picture` property that contains all the drawing calls necessary to render the SVG.
+That instance has a `Picture` property returning (surprise) a `Picture` object that contains all the drawing calls necessary to render the SVG.
 
 ### Bigger example
 
@@ -55,4 +55,4 @@ Notably that instance contains a `Picture` property that contains all the drawin
 
 ## License
 
-This work is placed under the Apache 2.0 license.
+This work is placed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html).
