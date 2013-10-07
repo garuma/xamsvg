@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B70EDB4C-A85E-45BE-A180-5B0462020C6F}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XamSvg</RootNamespace>
+    <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
+    <AndroidResgenClass>Resource</AndroidResgenClass>
+    <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
+    <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
+    <AssemblyName>XamSvg</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Android" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Resources\Resource.designer.cs" />
+    <Compile Include="Filters\ISVGFilterElement.cs" />
+    <Compile Include="Filters\SVGFilterElementGaussianBlur.cs" />
+    <Compile Include="Utils\ColorUtils.cs" />
+    <Compile Include="Utils\SVGCircleParser.cs" />
+    <Compile Include="Utils\SVGEllipseParser.cs" />
+    <Compile Include="Utils\SVGLineParser.cs" />
+    <Compile Include="Utils\SVGNumberParser.cs" />
+    <Compile Include="Utils\SVGParserUtils.cs" />
+    <Compile Include="Utils\SVGPathParser.cs" />
+    <Compile Include="Utils\SVGPolygonParser.cs" />
+    <Compile Include="Utils\SVGPolylineParser.cs" />
+    <Compile Include="Utils\SVGRectParser.cs" />
+    <Compile Include="Utils\SVGTransformParser.cs" />
+    <Compile Include="Utils\SVGConstants.cs" />
+    <Compile Include="Utils\XmlExtensions.cs" />
+    <Compile Include="PictureBitmapDrawable.cs" />
+    <Compile Include="Internal\SVGAttributes.cs" />
+    <Compile Include="Internal\SVGDirectColorMapper.cs" />
+    <Compile Include="Internal\SVGFilter.cs" />
+    <Compile Include="Internal\SVGGradient.cs" />
+    <Compile Include="Internal\SVGGroup.cs" />
+    <Compile Include="Internal\SVGHandler.cs" />
+    <Compile Include="Internal\SVGPaint.cs" />
+    <Compile Include="Internal\SVGParseException.cs" />
+    <Compile Include="Internal\SVGProperties.cs" />
+    <Compile Include="Internal\SVGStyleSet.cs" />
+    <Compile Include="SvgFactory.cs" />
+    <Compile Include="ISvgColorMapper.cs" />
+    <Compile Include="Svg.cs" />
+    <Compile Include="SvgParser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AboutResources.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\Strings.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Filters\" />
+    <Folder Include="Utils\" />
+    <Folder Include="Internal\" />
+  </ItemGroup>
+</Project>

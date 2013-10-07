@@ -1,0 +1,267 @@
+%{
+using System;
+using System.Linq;
+using System.Collections.Generics;
+using Android.Graphics;
+using Android.Util;
+
+using Coord = Tuple<float, float>
+
+namespace FooSvg.Utils
+{
+	public class SVGPathParser
+	{
+        enum Kind {
+             Relative,
+             Absolute
+        }
+
+        Path cp;
+        List<object> storage = new List<object> ();
+
+        public Path ParsePathString (string input)
+        {
+                var lexer = new SVGPathTokenizer (input);
+                cp = new Path ();
+                this.yyparse (lexer);
+                return currentPath;
+        }
+
+        void LInit (object smthing)
+        {
+                storage.Clear ();
+                storage.Add (smthing);
+        }
+
+        void LAdd (object smthing)
+        {
+                storage.Add (smthing);
+        }
+
+        IEnumerable<TResult> LRetrieve<TResult> ()
+        {
+                return storage.Cast<TResult> ();
+        }
+
+        void RecApply<T1> (IEnumerable<T1> seq, Action<T1> action)
+        {
+             if (seq == null)
+                return;
+             foreach (var e in seq)
+                action (e);
+        }
+
+        void RecApply<T1, T2> (IEnumerable<Tuple<T1, T2>> seq, Action<T1, T2> action)
+        {
+             if (seq == null)
+                return;
+             foreach (var e in seq)
+                action (e.Item1, e.Item2);
+        }
+%}
+
+%token WSP
+%token PLUS
+%token MINUS
+%token EXPONENT
+%token COMMA
+%token WSP
+
+%token MOVE_TO_CMD
+%token CLOSE_PATH_CMD
+%token LINE_TO_CMD
+%token HORIZ_LINE_TO_CMD
+%token VERT_LINE_TO_CMD
+%token CURVE_TO_CMD
+%token SMOOTH_CURVE_TO_CMD
+%token QUAD_BEZIER_CURVE_TO_CMD
+%token SMOOTH_QUAD_BEZIER_CURVE_TO_CMD
+%token ELLIPTICAL_ARC_CMD
+
+%start svg-path
+
+%%
+
+svg-path:
+    opt_wsp_list opt_moveto-drawto-command-groups opt_wsp_list
+
+opt_moveto-drawto-command-groups
+        : /* empty */
+        | moveto-drawto-command-groups
+
+moveto-drawto-command-groups
+        : moveto-drawto-command-group
+        | moveto-drawto-command-group opt_wsp_list moveto-drawto-command-groups
+
+moveto-drawto-command-group
+        : moveto opt_wsp_list opt_drawto-commands
+
+drawto-commands
+        : drawto-command
+        | drawto-command opt_wsp_list drawto-commands
+
+opt_drawto-commands
+        : /* empty */
+        | drawto-commands
+
+drawto-command
+        : closepath
+        | lineto
+        | horizontal-lineto
+        | vertical-lineto
+        | curveto
+        | smooth-curveto
+        | quadratic-bezier-curveto
+        | smooth-quadratic-bezier-curveto
+        | elliptical-arc
+
+moveto
+        : 'M' opt_wsp_list moveto-argument-sequence { var p = $3 as Tuple<Coord, IEnumerable<Coord>>; cp.MoveTo (p.Item1.Item1, p.Item1.Item2); RecApply (p.Item2, cp.LineTo); }
+        | 'm' opt_wsp_list moveto-argument-sequence { var p = $3 as Tuple<Coord, IEnumerable<Coord>>; cp.RMoveTo (p.Item1.Item1, p.Item1.Item2); RecApply (p.Item2, cp.RLineTo); }
+
+moveto-argument-sequence
+        : coordinate-pair { $$ = Tuple.Create ((Coord)$1, null); }
+        | coordinate-pair opt_comma-wsp lineto-argument-sequence { $$ = Tuple.Create ((Coord)$1, LRetrieve<Coord> ()); }
+
+closepath: 'Z' | 'z' { cp.Close (); }
+
+lineto
+        : 'L' opt_wsp_list lineto-argument-sequence { RecApply (LRetrieve<Coord> (), cp.LineTo); }
+        | 'l' opt_wsp_list lineto-argument-sequence { RecApply (LRetrieve<Coord> (), cp.RLineTo); }
+
+lineto-argument-sequence
+        : coordinate-pair { LInit ($1); }
+        | coordinate-pair opt_comma-wsp lineto-argument-sequence { LAdd ($1); }
+
+horizontal-lineto:
+        : 'H' opt_wsp_list horizontal-lineto-argument-sequence { throw new NotSupportedException (); }
+        | 'h' opt_wsp_list horizontal-lineto-argument-sequence { RecApply (LRetrieve<float> (), e => cp.RLineTo (e, 0)); }
+
+horizontal-lineto-argument-sequence:
+    coordinate  { LInit ($1); }
+    | coordinate comma-wsp? horizontal-lineto-argument-sequence { LAdd ($1); }
+
+vertical-lineto
+        : 'V' opt_wsp_list vertical-lineto-argument-sequence { throw new NotSupportedException (); }
+        | 'v' opt_wsp_list vertical-lineto-argument-sequence { RecApply (LRetrieve<float> (), e => cp.RLineTo (0, e)); }
+
+vertical-lineto-argument-sequence
+        : coordinate { LInit ($1); }
+        | coordinate opt_comma-wsp vertical-lineto-argument-sequence { LAdd ($1); }
+
+curveto
+        : 'C' opt_wsp_list curveto-argument-sequence
+
+curveto-argument-sequence:
+    curveto-argument
+    | curveto-argument comma-wsp? curveto-argument-sequence
+
+curveto-argument:
+    coordinate-pair comma-wsp? coordinate-pair comma-wsp? coordinate-pair
+
+smooth-curveto:
+    ( "S" | "s" ) wsp* smooth-curveto-argument-sequence
+
+smooth-curveto-argument-sequence:
+    smooth-curveto-argument
+    | smooth-curveto-argument comma-wsp? smooth-curveto-argument-sequence
+
+smooth-curveto-argument:
+    coordinate-pair comma-wsp? coordinate-pair
+
+quadratic-bezier-curveto:
+    ( "Q" | "q" ) wsp* quadratic-bezier-curveto-argument-sequence
+
+quadratic-bezier-curveto-argument-sequence:
+    quadratic-bezier-curveto-argument
+    | quadratic-bezier-curveto-argument comma-wsp? 
+        quadratic-bezier-curveto-argument-sequence
+
+quadratic-bezier-curveto-argument:
+    coordinate-pair comma-wsp? coordinate-pair
+
+smooth-quadratic-bezier-curveto:
+    ( "T" | "t" ) wsp* smooth-quadratic-bezier-curveto-argument-sequence
+
+smooth-quadratic-bezier-curveto-argument-sequence:
+    coordinate-pair
+    | coordinate-pair comma-wsp? smooth-quadratic-bezier-curveto-argument-sequence
+
+elliptical-arc:
+    ( "A" | "a" ) wsp* elliptical-arc-argument-sequence
+
+elliptical-arc-argument-sequence:
+    elliptical-arc-argument
+    | elliptical-arc-argument comma-wsp? elliptical-arc-argument-sequence
+
+elliptical-arc-argument:
+    nonnegative-number comma-wsp? nonnegative-number comma-wsp? 
+        number comma-wsp flag comma-wsp? flag comma-wsp? coordinate-pair
+
+coordinate-pair:  coordinate opt_comma-wsp coordinate
+
+coordinate: number
+
+nonnegative-number
+        : integer-constant
+        | floating-point-constant
+
+number
+        : opt_sign integer-constant
+        | opt_sign floating-point-constant
+
+flag
+        : '0' | '1'
+
+comma-wsp
+        : wsp_list opt_comma opt_wsp_list
+        | comma opt_wsp_list
+
+opt_comma-wsp
+        : /* empty */
+        | comma-wsp
+
+integer-constant
+        : digit-sequence
+
+floating-point-constant
+        : fractional-constant opt_exponent
+        | digit-sequence exponent
+
+fractional-constant
+        : opt_digit-sequence '.' digit-sequence
+        | digit-sequence '.'
+
+exponent
+        : EXPONENT opt_sign digit-sequence
+
+opt_exponent
+        : /* empty */
+        | exponent
+
+opt_sign
+        : /* empty */
+        | PLUS
+        | MINUS
+
+opt_digit-sequence
+        : /* empty */
+        | digit-sequence
+
+digit-sequence
+        : digit
+        | digit digit-sequence
+
+digit:
+    '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+
+wsp_list
+        : WSP
+        | WSP wsp_list
+
+opt_wsp_list
+        : /* empty */
+        | WSP opt_wsp 
+
+%%
+}
