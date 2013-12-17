@@ -56,3 +56,7 @@ That instance has a `Picture` property returning (surprise) a `Picture` object t
 ## License
 
 This work is placed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+## Tiger screenshot
+
+<img src="https://neteril.org/img/xamsvg_screen.png" alt="screenshot" width="500" />
