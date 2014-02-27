@@ -628,6 +628,7 @@ namespace XamSvg.Internals.Utils
 			switch (mCurrentChar) {
 			case '-':
 				mantPos = false;
+				mCurrentChar = this.read ();
 				break;
 			case '+':
 				mCurrentChar = this.read ();
@@ -663,6 +664,7 @@ namespace XamSvg.Internals.Utils
 			switch (mCurrentChar) {
 			case '-':
 				expPos = false;
+				mCurrentChar = this.read ();
 				break;
 			case '+':
 				mCurrentChar = this.read ();
