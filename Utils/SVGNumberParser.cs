@@ -10,7 +10,7 @@ namespace XamSvg.Internals.Utils
 		{
 			if (str == null)
 				return null;
-			return Regex.Split (str, "[\\s,]+").Select (float.Parse).ToArray ();
+			return Regex.Split (str, "[\\s,]+").Select (FloatUtils.ToSafeFloat).ToArray ();
 		}
 
 		public static int[] ParseInts (this string str)

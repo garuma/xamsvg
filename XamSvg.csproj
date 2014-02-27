@@ -73,6 +73,7 @@
     <Compile Include="ISvgColorMapper.cs" />
     <Compile Include="Svg.cs" />
     <Compile Include="SvgParser.cs" />
+    <Compile Include="Utils\FloatUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

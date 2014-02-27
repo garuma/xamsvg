@@ -279,8 +279,8 @@ namespace XamSvg.Internals
 
 		int parseGradientStopAlpha(SVGProperties pSVGProperties) {
 			string opacityStyle = pSVGProperties.getStringProperty(SVGConstants.ATTRIBUTE_STOP_OPACITY);
-			if(opacityStyle != null) {
-				float alpha = float.Parse (opacityStyle);
+			if (opacityStyle != null) {
+				float alpha = opacityStyle.ToSafeFloat ();
 				int alphaInt = (int)Math.Round(255 * alpha);
 				return (alphaInt << 24);
 			} else {
