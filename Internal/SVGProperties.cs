@@ -1,5 +1,4 @@
 using System;
-using System.Xml;
 using Attributes = System.Collections.Generic.Dictionary<string, string>;
 
 namespace XamSvg.Internals

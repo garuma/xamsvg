@@ -1,5 +1,4 @@
 using System;
-using System.Xml;
 using Android.Graphics;
 using System.Globalization;
 
