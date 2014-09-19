@@ -13,6 +13,9 @@ namespace XamSvg
 	public class PictureBitmapDrawable : Drawable
 	{
 		Bitmap currentBitmap;
+		
+		public PictureBitmapDrawable(IntPtr handle, JniHandleOwnership transfer) 
+            		: base(handle, transfer) { }
 
 		public PictureBitmapDrawable (Picture pic)
 		{
@@ -26,7 +29,8 @@ namespace XamSvg
 
 		public override void Draw (Canvas canvas)
 		{
-			canvas.DrawBitmap (currentBitmap, 0, 0, null);
+			if (currentBitmap != null)
+				canvas.DrawBitmap (currentBitmap, 0, 0, null);
 		}
 
 		public override int Opacity {
@@ -39,8 +43,11 @@ namespace XamSvg
 		{
 			var width = bounds.Width ();
 			var height = bounds.Height ();
-			if (currentBitmap == null || currentBitmap.Height != height || currentBitmap.Width != width)
-				currentBitmap = SvgFactory.MakeBitmapFromPicture (Picture, width, height);
+			if (width <= 0 || height <= 0)
+                		return;
+
+            		if (Picture != null && (currentBitmap == null || currentBitmap.Height != height || currentBitmap.Width != width))
+                		currentBitmap = SvgFactory.MakeBitmapFromPicture(Picture, width, height);
 		}
 
 		public override int IntrinsicWidth {
