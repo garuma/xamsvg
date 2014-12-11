@@ -50,7 +50,9 @@ namespace XamSvg
 		public static Svg ParseSvgFromReader (TextReader reader, ISvgColorMapper pSVGColorMapper)
 		{
 			try {
-				var xmlReader = XmlReader.Create (reader);
+				var readerSettings = new XmlReaderSettings();
+				readerSettings.DtdProcessing = DtdProcessing.Ignore;
+				var xmlReader = XmlReader.Create (reader, readerSettings);
 				Picture picture = new Picture();
 				var svgHandler = new SVGHandler (picture, pSVGColorMapper);
 				svgHandler.Parse (xmlReader);
