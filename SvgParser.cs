@@ -51,6 +51,7 @@ namespace XamSvg
 		{
 			try {
 				var readerSettings = new XmlReaderSettings();
+				readerSettings.XmlResolver = null;
 				readerSettings.DtdProcessing = DtdProcessing.Ignore;
 				var xmlReader = XmlReader.Create (reader, readerSettings);
 				Picture picture = new Picture();
